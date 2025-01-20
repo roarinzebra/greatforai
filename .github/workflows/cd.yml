@@ -2,18 +2,16 @@ name: CD
 
 on:
   push:
-    branches: [ main, staging ]
-    
+    branches: [ main ]
   workflow_run:
     workflows: ["CI"]
     types:
       - completed
 
 jobs:
-  deploy-staging:
-    if: github.ref == 'refs/heads/staging'
+  deploy-preview:
     runs-on: ubuntu-latest
-    environment: staging
+    environment: Development
     
     steps:
       - uses: actions/checkout@v4
@@ -23,22 +21,23 @@ jobs:
         with:
           name: build-artifacts
           
-      - name: Deploy to Vercel (Staging)
+      - name: Deploy to Vercel (Preview)
+        id: deploy
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           working-directory: ./
         env:
-          VERCEL_ENV: staging
+          VERCEL_ENV: preview
           
   deploy-production:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    environment: production
-    needs: [deploy-staging]
+    environment: Production
+    needs: [deploy-preview]
     
     steps:
       - uses: actions/checkout@v4
@@ -49,25 +48,14 @@ jobs:
           name: build-artifacts
           
       - name: Deploy to Vercel (Production)
+        id: deploy
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-args: '--prod'
           working-directory: ./
         env:
-          VERCEL_ENV: production
-          
-  notify:
-    needs: [deploy-staging, deploy-production]
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Notify on success
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
-          slack-message: "🚀 Deployment successful!\nEnvironment: ${{ github.ref == 'refs/heads/main' && 'Production' || 'Staging' }}\nCommit: ${{ github.sha }}"
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }} 
+          VERCEL_ENV: production 
