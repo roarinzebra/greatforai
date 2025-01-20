@@ -1,13 +1,15 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "composite": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", ".turbo"]
+  "exclude": ["node_modules", "dist"]
 } 

@@ -2,16 +2,44 @@ name: CD
 
 on:
   push:
+    branches: [ main, development ]
+  pull_request:
     branches: [ main ]
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
 
 jobs:
-  deploy-preview:
+  build:
     runs-on: ubuntu-latest
-    environment: Development
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          
+      - name: Install dependencies
+        run: pnpm install
+        
+      - name: Build packages
+        run: pnpm build
+        
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            apps/*/dist
+            packages/*/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'Production' || 'Development' }}
     
     steps:
       - uses: actions/checkout@v4
@@ -21,41 +49,14 @@ jobs:
         with:
           name: build-artifacts
           
-      - name: Deploy to Vercel (Preview)
-        id: deploy
+      - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-org-id: ${{ secrets.VERCEL_USER_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-args: ${{ github.ref == 'refs/heads/main' && '--prod' || '' }}
           working-directory: ./
         env:
-          VERCEL_ENV: preview
-          
-  deploy-production:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment: Production
-    needs: [deploy-preview]
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-          
-      - name: Deploy to Vercel (Production)
-        id: deploy
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          vercel-args: '--prod'
-          working-directory: ./
-        env:
-          VERCEL_ENV: production 
+          VERCEL_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} 
