@@ -4,7 +4,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", ".next/**"]
     },
     "lint": {
       "inputs": ["src/**/*.ts", "src/**/*.tsx", "apps/**/*.ts", "apps/**/*.tsx", "config/**/*.ts", "config/**/*.tsx"],
