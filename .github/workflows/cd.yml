@@ -23,9 +23,7 @@ jobs:
           version: 8
           
       - name: Install dependencies
-        run: |
-          pwd
-          pnpm install
+        run: pnpm install
           
       - name: Build packages
         run: |
@@ -34,22 +32,24 @@ jobs:
           echo "Build completed"
           ls -la apps/web/.next || true
         
-      - name: Upload build artifacts
+      - name: Upload repository
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
-          path: |
-            apps/web/.next
-            packages/*/dist
-
+          name: repo
+          path: .
+          
   deploy:
     needs: build
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'Production' || 'Development' }}
     
     steps:
-      - uses: actions/checkout@v4
-      
+      - name: Download repository
+        uses: actions/download-artifact@v4
+        with:
+          name: repo
+          path: .
+          
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -63,18 +63,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-          
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_USER_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: apps/web
+          working-directory: .
           vercel-args: '--prod'
           github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
