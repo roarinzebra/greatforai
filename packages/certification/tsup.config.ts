@@ -3,7 +3,10 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['cjs', 'esm'],
-  dts: true,
+  dts: {
+    entry: './src/index.ts',
+    resolve: true
+  },
   clean: true,
   external: [
     '@greatforai/core',
