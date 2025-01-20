@@ -33,7 +33,7 @@ jobs:
         with:
           name: build-artifacts
           path: |
-            apps/*/out
+            apps/web/.next
             packages/*/dist
 
   deploy:
@@ -55,7 +55,7 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_USER_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: apps/web/out
+          working-directory: apps/web
           vercel-args: '--prod'
           github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
