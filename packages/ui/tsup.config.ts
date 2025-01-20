@@ -3,14 +3,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['cjs', 'esm'],
-  dts: {
-    entry: './src/index.ts',
-    resolve: true,
-    compilerOptions: {
-      composite: true,
-      tsBuildInfoFile: './dist/.tsbuildinfo'
-    }
-  },
+  dts: true,
   clean: true,
   external: [
     'react',
@@ -21,4 +14,5 @@ export default defineConfig({
   sourcemap: true,
   minify: false,
   outDir: 'dist',
+  tsconfig: './tsconfig.json'
 }); 

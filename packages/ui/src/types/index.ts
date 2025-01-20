@@ -1,2 +1,7 @@
 // Placeholder for type exports
-export {}; 
+export {};
+
+// Types module exports
+export interface UIConfig {
+  placeholder: boolean;
+} 
