@@ -7,7 +7,7 @@
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": [
@@ -15,5 +15,5 @@
     "src/**/*.tsx",
     "src/**/*.json"
   ],
-  "exclude": ["node_modules", "dist", ".turbo"]
+  "exclude": ["node_modules", "dist", ".turbo", "coverage", "**/*.test.ts"]
 } 
