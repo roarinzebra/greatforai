@@ -1,0 +1,53 @@
+flowchart TD
+    subgraph "Client Layer"
+        W[Web App]
+        M[Mobile App]
+        A[API Clients]
+    end
+
+    subgraph "API Gateway"
+        AG[API Gateway]
+        Auth[Authentication]
+        Rate[Rate Limiting]
+    end
+
+    subgraph "Core Services"
+        AS[Analysis Service]
+        OS[Optimization Service]
+        MS[Monitoring Service]
+        NS[Notification Service]
+    end
+
+    subgraph "Processing Layer"
+        KG[Knowledge Graph Engine]
+        VE[Vector Engine]
+        AE[Analysis Engine]
+        CE[Content Engine]
+    end
+
+    subgraph "Data Layer"
+        PG[(PostgreSQL)]
+        Neo[(Neo4j)]
+        Redis[(Redis)]
+        VS[(Vector Store)]
+    end
+
+    W --> AG
+    M --> AG
+    A --> AG
+    AG --> Auth
+    AG --> Rate
+    Auth --> AS
+    Auth --> OS
+    Auth --> MS
+    Auth --> NS
+    
+    AS --> KG
+    AS --> VE
+    OS --> AE
+    OS --> CE
+    
+    KG --> Neo
+    VE --> VS
+    AE --> PG
+    CE --> Redis

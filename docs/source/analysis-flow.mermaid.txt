@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant U as User
+    participant W as Web App
+    participant A as API
+    participant AN as Analysis Service
+    participant KG as Knowledge Graph
+    participant DB as Database
+
+    U->>W: Enter website URL
+    W->>A: Submit analysis request
+    A->>AN: Initialize analysis
+    AN->>AN: Crawl website
+    AN->>KG: Generate knowledge graph
+    KG->>DB: Store graph data
+    AN->>DB: Store analysis results
+    DB->>A: Return analysis data
+    A->>W: Update UI with results
+    W->>U: Show analysis report

@@ -1,0 +1,39 @@
+flowchart TD
+    subgraph ContentAnalysis[Content Analysis]
+        A1[Structure Clarity]
+        A2[Information Density]
+        A3[Factual Accuracy]
+        A4[Content Freshness]
+        A5[Citation Quality]
+    end
+
+    subgraph TechnicalFactors[Technical Factors]
+        B1[Page Load Speed]
+        B2[Mobile Optimization]
+        B3[Schema Markup]
+        B4[API Accessibility]
+        B5[Data Structure]
+    end
+
+    subgraph UserSignals[User Experience Signals]
+        C1[Bounce Rate]
+        C2[Time on Page]
+        C3[User Feedback]
+        C4[Error Rates]
+        C5[Navigation Patterns]
+    end
+
+    subgraph AIInteraction[AI Interaction Patterns]
+        D1[Query Response Match]
+        D2[Context Retention]
+        D3[Information Hierarchy]
+        D4[Source Authority]
+        D5[Update Frequency]
+    end
+
+    Score[Final AI Recommendation Score]
+    
+    ContentAnalysis --> Score
+    TechnicalFactors --> Score
+    UserSignals --> Score
+    AIInteraction --> Score

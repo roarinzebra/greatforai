@@ -1,0 +1,28 @@
+{
+  "name": "@greatforai/ai-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsup --watch",
+    "lint": "eslint src/",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {    
+    "@greatforai/core": "workspace:*",
+    "@greatforai/database": "workspace:*",
+    "ai": "^4.1.0",
+    "@anthropic-ai/sdk": "^0.33.1",
+    "@google/generative-ai": "^0.21.0",
+    "openai": "^4.79.1",
+    "langchain": "^0.3.11"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "eslint": "^9.18.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.3"
+  }
+} 

@@ -1,0 +1,202 @@
+import React, { useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Globe, Search, LineChart, Zap, CheckCircle, AlertCircle, ArrowRight } from 'lucide-react';
+
+interface WebsiteAnalysis {
+  domain: string;
+  status: 'analyzing' | 'complete';
+  scores: {
+    aiReadiness: number;
+    structureScore: number;
+    semanticScore: number;
+  };
+  insights: string[];
+}
+
+export default function AIAOWebsiteAnalyzer() {
+  const [url, setUrl] = useState('');
+  const [analysis, setAnalysis] = useState<WebsiteAnalysis | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<'free' | 'pro'>('free');
+
+  // Simulate website analysis
+  const analyzeWebsite = () => {
+    if (!url) return;
+    
+    setAnalysis({
+      domain: url,
+      status: 'analyzing',
+      scores: { aiReadiness: 0, structureScore: 0, semanticScore: 0 },
+      insights: []
+    });
+
+    // Simulate analysis completion
+    setTimeout(() => {
+      setAnalysis({
+        domain: url,
+        status: 'complete',
+        scores: {
+          aiReadiness: 72,
+          structureScore: 85,
+          semanticScore: 68
+        },
+        insights: [
+          'AI agents may have difficulty understanding your product descriptions',
+          'Site structure is well-organized for search engines',
+          'Missing semantic markup in key landing pages'
+        ]
+      });
+    }, 2000);
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
+      {/* Header */}
+      <div className="text-center space-y-4">
+        <h1 className="text-4xl font-bold">AI Website Optimizer</h1>
+        <p className="text-lg text-gray-600">Make your website AI-friendly and boost visibility</p>
+      </div>
+
+      {/* Website Analysis Input */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex gap-4">
+            <input
+              type="url"
+              className="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your website URL..."
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+            />
+            <button
+              className={`px-6 py-2 rounded-lg text-white ${
+                url ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300'
+              }`}
+              disabled={!url || analysis?.status === 'analyzing'}
+              onClick={analyzeWebsite}
+            >
+              {analysis?.status === 'analyzing' ? 'Analyzing...' : 'Analyze Website'}
+            </button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Pricing Plans */}
+      <div className="grid md:grid-cols-2 gap-6">
+        <Card className={`cursor-pointer ${selectedPlan === 'free' ? 'ring-2 ring-blue-500' : ''}`}
+              onClick={() => setSelectedPlan('free')}>
+          <CardHeader>
+            <CardTitle>Free Analysis</CardTitle>
+            <p className="text-2xl font-bold">$0</p>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              <li className="flex items-center"><CheckCircle size={16} className="mr-2 text-green-500" /> Basic AI Readiness Score</li>
+              <li className="flex items-center"><CheckCircle size={16} className="mr-2 text-green-500" /> Site Structure Analysis</li>
+              <li className="flex items-center"><CheckCircle size={16} className="mr-2 text-green-500" /> Weekly Site Scan</li>
+              <li className="flex items-center opacity-50"><AlertCircle size={16} className="mr-2" /> Limited to 5 pages</li>
+            </ul>
+          </CardContent>
+        </Card>
+
+        <Card className={`cursor-pointer ${selectedPlan === 'pro' ? 'ring-2 ring-blue-500' : ''}`}
+              onClick={() => setSelectedPlan('pro')}>
+          <CardHeader>
+            <CardTitle>Pro Monitoring</CardTitle>
+            <p className="text-2xl font-bold">$99/mo</p>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              <li className="flex items-center"><Zap size={16} className="mr-2 text-blue-500" /> Full Site Analysis</li>
+              <li className="flex items-center"><Zap size={16} className="mr-2 text-blue-500" /> AI Knowledge Graph</li>
+              <li className="flex items-center"><Zap size={16} className="mr-2 text-blue-500" /> Daily Monitoring</li>
+              <li className="flex items-center"><Zap size={16} className="mr-2 text-blue-500" /> Content Optimization API</li>
+              <li className="flex items-center"><Zap size={16} className="mr-2 text-blue-500" /> Priority Support</li>
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Analysis Results */}
+      {analysis?.status === 'complete' && (
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Website Analysis Results</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-600">AI Readiness</p>
+                  <div className="flex items-center">
+                    <div className="flex-1 mr-4">
+                      <div className="h-2 bg-gray-200 rounded-full">
+                        <div
+                          className="h-2 bg-blue-500 rounded-full"
+                          style={{ width: `${analysis.scores.aiReadiness}%` }}
+                        />
+                      </div>
+                    </div>
+                    <span className="font-bold">{analysis.scores.aiReadiness}%</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-600">Structure Score</p>
+                  <div className="flex items-center">
+                    <div className="flex-1 mr-4">
+                      <div className="h-2 bg-gray-200 rounded-full">
+                        <div
+                          className="h-2 bg-green-500 rounded-full"
+                          style={{ width: `${analysis.scores.structureScore}%` }}
+                        />
+                      </div>
+                    </div>
+                    <span className="font-bold">{analysis.scores.structureScore}%</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-600">Semantic Score</p>
+                  <div className="flex items-center">
+                    <div className="flex-1 mr-4">
+                      <div className="h-2 bg-gray-200 rounded-full">
+                        <div
+                          className="h-2 bg-yellow-500 rounded-full"
+                          style={{ width: `${analysis.scores.semanticScore}%` }}
+                        />
+                      </div>
+                    </div>
+                    <span className="font-bold">{analysis.scores.semanticScore}%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <h3 className="font-semibold mb-3">Key Insights:</h3>
+                <ul className="space-y-2">
+                  {analysis.insights.map((insight, index) => (
+                    <li key={index} className="flex items-center">
+                      <ArrowRight size={16} className="mr-2 text-blue-500" />
+                      {insight}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+
+          {selectedPlan === 'free' && (
+            <Card className="bg-blue-50">
+              <CardContent className="p-6">
+                <div className="flex items-center">
+                  <AlertCircle className="text-blue-500 mr-2" />
+                  <p>Upgrade to Pro for full site analysis and continuous AI optimization!</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

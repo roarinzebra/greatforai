@@ -1,0 +1,57 @@
+flowchart TD
+    A[Website Registration] --> B[Initial Crawl]
+    B --> C{Content Analysis}
+    C --> D[Basic Analysis]
+    C --> E[AI Detection]
+    C --> F[Graph Creation]
+    
+    D --> G[Store Results]
+    E --> G
+    F --> G
+    
+    G --> H[Generate Reports]
+    H --> I[Update Dashboard]
+    
+    subgraph "AI Detection Flow"
+        E1[Request Analysis] --> E2{Pattern Match}
+        E2 -->|Known AI| E3[Record Interaction]
+        E2 -->|Unknown| E4[Behavioral Analysis]
+        E4 --> E5[Update Patterns]
+    end
+    
+    subgraph "Content Analysis Flow"
+        D1[Extract Content] --> D2[Parse Structure]
+        D2 --> D3[Analyze Metadata]
+        D3 --> D4[Generate Metrics]
+    end
+    
+    subgraph "Graph Creation Flow"
+        F1[Create Nodes] --> F2[Establish Relations]
+        F2 --> F3[Calculate Weights]
+        F3 --> F4[Update Indices]
+    end
+
+stateDiagram-v2
+    [*] --> WebsiteRegistered
+    WebsiteRegistered --> Crawling
+    Crawling --> AnalysisInProgress
+    AnalysisInProgress --> AIDetectionActive
+    AnalysisInProgress --> GraphCreation
+    AIDetectionActive --> ResultsCalculation
+    GraphCreation --> ResultsCalculation
+    ResultsCalculation --> ReportGeneration
+    ReportGeneration --> [*]
+
+    state AnalysisInProgress {
+        [*] --> ContentExtraction
+        ContentExtraction --> StructureAnalysis
+        StructureAnalysis --> MetadataAnalysis
+        MetadataAnalysis --> [*]
+    }
+
+    state AIDetectionActive {
+        [*] --> PatternMatching
+        PatternMatching --> BehaviorAnalysis
+        BehaviorAnalysis --> SignatureUpdate
+        SignatureUpdate --> [*]
+    }

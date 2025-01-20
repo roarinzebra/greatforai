@@ -1,21 +1,68 @@
-# React + TypeScript + Vite
+# Great For AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern AI-powered web application built with cutting-edge technologies.
 
-While this project uses React, Vite supports many popular JS frameworks. [See all the supported frameworks](https://vitejs.dev/guide/#scaffolding-your-first-vite-project).
+## Tech Stack
 
-## Deploy Your Own
+### Frontend
+- Next.js 15 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS
+- Shadcn UI / Radix UI
+- Vercel AI SDK
 
-Deploy your own Vite project with Vercel.
+### Backend
+- Node.js with TypeScript
+- Edge Functions
+- Vercel AI SDK Integrations
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/vercel/tree/main/examples/vite-react&template=vite-react)
+### Testing & Quality
+- Jest
+- Cypress
+- ESLint
+- Prettier
 
-_Live Example: https://vite-react-example.vercel.app_
+### Monitoring & Analytics
+- ELK Stack (Elasticsearch, Logstash, Kibana)
+- Grafana
+- Lighthouse CI
 
-### Deploying From Your Terminal
+### Infrastructure
+- Vercel Platform
+- Edge Functions
+- Serverless Architecture
 
-You can deploy your new Vite project with a single command from your terminal using [Vercel CLI](https://vercel.com/download):
+## Project Structure
 
-```shell
-$ vercel
 ```
+.
+├── apps/
+│   ├── web/                 # Next.js web application
+│   └── mobile/             # Mobile application
+├── packages/
+│   ├── scoring/            # Scoring engine
+│   └── shared/             # Shared utilities
+├── services/
+│   ├── api/                # API services
+│   ├── worker/             # Background workers
+│   └── scheduler/          # Task scheduler
+├── tools/
+│   ├── docker/             # Docker configurations
+│   └── testing/            # Testing utilities
+└── environments/           # Environment configurations
+```
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies: `pnpm install`
+3. Start development server: `pnpm dev`
+
+## Contributing
+
+Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and development process.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

@@ -1,0 +1,151 @@
+import React, { useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { AlertCircle, Check, LucideFileText, ArrowRight, Zap } from 'lucide-react';
+
+// Basic free analysis results type
+interface AnalysisResult {
+  score: number;
+  recommendations: string[];
+  category: string;
+}
+
+export default function AIAOApp() {
+  const [content, setContent] = useState('');
+  const [results, setResults] = useState<AnalysisResult[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<'free' | 'pro'>('free');
+
+  // Simulate analysis process
+  const analyzeContent = () => {
+    setIsAnalyzing(true);
+    setTimeout(() => {
+      const basicResults = [
+        {
+          category: 'Structure',
+          score: 78,
+          recommendations: ['Add more descriptive headings', 'Break down long paragraphs']
+        },
+        {
+          category: 'Readability',
+          score: 85,
+          recommendations: ['Content is well-structured', 'Consider adding more keywords']
+        }
+      ];
+      setResults(basicResults);
+      setIsAnalyzing(false);
+    }, 1500);
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
+      {/* Header Section */}
+      <div className="text-center space-y-4">
+        <h1 className="text-4xl font-bold">AI Content Optimizer</h1>
+        <p className="text-lg text-gray-600">Optimize your content for AI agents and search engines</p>
+      </div>
+
+      {/* Pricing Cards */}
+      <div className="grid md:grid-cols-2 gap-6 mb-8">
+        <Card className={`cursor-pointer ${selectedPlan === 'free' ? 'ring-2 ring-blue-500' : ''}`}
+              onClick={() => setSelectedPlan('free')}>
+          <CardHeader>
+            <CardTitle>Free Plan</CardTitle>
+            <p className="text-2xl font-bold">$0</p>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              <li className="flex items-center"><Check size={16} className="mr-2 text-green-500" /> Basic Content Analysis</li>
+              <li className="flex items-center"><Check size={16} className="mr-2 text-green-500" /> Readability Score</li>
+              <li className="flex items-center"><Check size={16} className="mr-2 text-green-500" /> Structure Analysis</li>
+            </ul>
+          </CardContent>
+        </Card>
+
+        <Card className={`cursor-pointer ${selectedPlan === 'pro' ? 'ring-2 ring-blue-500' : ''}`}
+              onClick={() => setSelectedPlan('pro')}>
+          <CardHeader>
+            <CardTitle>Pro Plan</CardTitle>
+            <p className="text-2xl font-bold">$49/mo</p>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              <li className="flex items-center"><Zap size={16} className="mr-2 text-blue-500" /> AI Knowledge Graph</li>
+              <li className="flex items-center"><Zap size={16} className="mr-2 text-blue-500" /> Semantic Enhancement</li>
+              <li className="flex items-center"><Zap size={16} className="mr-2 text-blue-500" /> Content Adaptation</li>
+              <li className="flex items-center"><Zap size={16} className="mr-2 text-blue-500" /> Premium Support</li>
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Content Input */}
+      <Card>
+        <CardContent className="p-6">
+          <textarea
+            className="w-full h-40 p-4 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="Paste your content here..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+          <button
+            className={`mt-4 px-6 py-2 rounded-lg text-white ${
+              content ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300'
+            }`}
+            disabled={!content || isAnalyzing}
+            onClick={analyzeContent}
+          >
+            {isAnalyzing ? 'Analyzing...' : 'Analyze Content'}
+          </button>
+        </CardContent>
+      </Card>
+
+      {/* Results Section */}
+      {results.length > 0 && (
+        <div className="space-y-4">
+          {results.map((result, index) => (
+            <Card key={index}>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <LucideFileText className="mr-2" />
+                  {result.category} Analysis
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center mb-4">
+                  <div className="flex-1 mr-4">
+                    <div className="h-2 bg-gray-200 rounded-full">
+                      <div
+                        className="h-2 bg-blue-500 rounded-full"
+                        style={{ width: `${result.score}%` }}
+                      />
+                    </div>
+                  </div>
+                  <span className="text-lg font-bold">{result.score}%</span>
+                </div>
+                <ul className="space-y-2">
+                  {result.recommendations.map((rec, idx) => (
+                    <li key={idx} className="flex items-center">
+                      <ArrowRight size={16} className="mr-2 text-blue-500" />
+                      {rec}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          ))}
+          
+          {selectedPlan === 'free' && (
+            <Card className="bg-blue-50">
+              <CardContent className="p-6">
+                <div className="flex items-center">
+                  <AlertCircle className="text-blue-500 mr-2" />
+                  <p>Upgrade to Pro for advanced AI optimization features and detailed recommendations!</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
