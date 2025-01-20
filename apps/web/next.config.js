@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const config = {
   distDir: 'dist',
   output: 'export',
   images: {
@@ -7,4 +7,4 @@ const nextConfig = {
   }
 };
 
-module.exports = nextConfig; 
+export default config; 
