@@ -1,2 +1,7 @@
 // Placeholder for utils module exports
-export {}; 
+export {};
+
+// Utils for certification module
+export function createPlaceholder(): boolean {
+  return true;
+} 

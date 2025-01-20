@@ -1,2 +1,7 @@
 // Placeholder for types module exports
-export {}; 
+export {};
+
+// Types for certification module
+export interface CertificationConfig {
+  placeholder: boolean;
+} 
