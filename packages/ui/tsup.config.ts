@@ -2,17 +2,18 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: ['src/index.ts'],
-  format: ['cjs', 'esm'],
-  dts: true,
+  format: ['esm', 'cjs'],
+  dts: {
+    compilerOptions: {
+      moduleResolution: "bundler",
+      jsx: "react-jsx"
+    }
+  },
+  splitting: false,
   clean: true,
-  external: [
-    'react',
-    'react-dom',
-    '@greatforai/core'
-  ],
+  external: ['react', 'react-dom'],
   treeshake: true,
   sourcemap: true,
   minify: false,
-  outDir: 'dist',
-  tsconfig: './tsconfig.json'
+  outDir: 'dist'
 }); 
