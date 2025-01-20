@@ -33,7 +33,7 @@ jobs:
         with:
           name: build-artifacts
           path: |
-            apps/*/dist
+            apps/*/out
             packages/*/dist
 
   deploy:
