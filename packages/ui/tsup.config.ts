@@ -2,14 +2,19 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: ['src/index.ts'],
-  format: ['esm', 'cjs'],
+  format: ['cjs', 'esm'],
   dts: {
-    resolve: true,
+    entry: './src/index.ts',
+    resolve: true
   },
   clean: true,
-  external: ['react', 'react-dom'],
+  external: [
+    'react',
+    'react-dom',
+    '@greatforai/core'
+  ],
   treeshake: true,
   sourcemap: true,
-  minify: true,
+  minify: false,
   outDir: 'dist',
 }); 
