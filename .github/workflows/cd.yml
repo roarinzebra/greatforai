@@ -23,9 +23,24 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 8
-          
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Cache Next.js build
         uses: actions/cache@v4
@@ -50,8 +65,9 @@ jobs:
           name: repo
           path: |
             .
-            !node_modules
             !.git
+            !**/node_modules
+            !**/.next/cache
           
   deploy:
     needs: build
@@ -78,9 +94,26 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 8
-          
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm list next
 
       - name: Restore Next.js cache
         uses: actions/cache@v4
