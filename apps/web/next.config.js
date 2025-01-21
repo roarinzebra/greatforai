@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const config = {
+const nextConfig = {
   images: {
     domains: [], // Add any image domains you need here
   },
@@ -9,7 +9,11 @@ const config = {
     "@greatforai/database",
     "@greatforai/ui"
   ],
-  output: 'standalone'
+  output: 'standalone',
+  outputFileTracingRoot: process.env.NEXT_PRIVATE_LOCAL_WEBPACK ? undefined : process.cwd(),
+  experimental: {
+    externalDir: true
+  }
 };
 
-export default config;
+export default nextConfig;
