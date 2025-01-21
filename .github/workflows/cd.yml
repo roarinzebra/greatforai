@@ -64,10 +64,9 @@ jobs:
         with:
           name: build-artifacts
           path: |
-            apps/*/dist
-            packages/*/dist
-            apps/web/.next
-            !**/.next/cache
+            apps/web/.next/**/*
+            !apps/web/.next/cache/**/*
+            packages/*/dist/**/*
           
   deploy:
     needs: build
@@ -79,12 +78,6 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-          path: .
-          
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -113,14 +106,12 @@ jobs:
           pnpm install
           pnpm list next
 
-      - name: Restore Next.js cache
-        uses: actions/cache@v4
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
         with:
-          path: |
-            apps/web/.next/cache
-            node_modules/.cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}
-      
+          name: build-artifacts
+          path: .
+          
       - name: Deploy to Vercel
         run: |
           echo "Deploying to Vercel..."
