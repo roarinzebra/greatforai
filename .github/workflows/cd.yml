@@ -5,7 +5,7 @@ on:
     workflows: ["CI"]
     types:
       - completed
-    branches: [ main, development ]
+    branches: [ development ]
 
 jobs:
   build:
@@ -70,10 +70,10 @@ jobs:
             !apps/web/.next/cache/**/*
             packages/*/dist/**/*
           
-  deploy:
+  deploy-preview:
     needs: build
     runs-on: ubuntu-latest
-    environment: ${{ github.ref == 'refs/heads/main' && 'Production' || 'Development' }}
+    environment: Development
     
     steps:
       - uses: actions/checkout@v4
@@ -114,12 +114,12 @@ jobs:
           name: build-artifacts
           path: .
           
-      - name: Deploy to Vercel
+      - name: Deploy to Vercel (Preview)
         run: |
-          echo "Deploying to Vercel..."
-          npx vercel pull --yes --environment=${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} --token=${{ secrets.VERCEL_TOKEN }}
+          echo "Deploying preview to Vercel..."
+          npx vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
           npx vercel build --token=${{ secrets.VERCEL_TOKEN }}
-          npx vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} ${{ github.ref == 'refs/heads/main' && '--prod' || '' }}
+          npx vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_USER_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }} 
