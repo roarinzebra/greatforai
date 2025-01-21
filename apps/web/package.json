@@ -16,6 +16,8 @@
     "@greatforai/core": "workspace:*",
     "@greatforai/database": "workspace:*",
     "@greatforai/ui": "workspace:*",
+    "@vercel/analytics": "^1.4.1",
+    "@vercel/speed-insights": "^1.1.0",
     "next": "^15.1.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -31,4 +33,4 @@
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3"
   }
-} 
+}
