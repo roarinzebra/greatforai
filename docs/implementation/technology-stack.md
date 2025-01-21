@@ -65,42 +65,52 @@
 ## Development & Build Tools
 
 ### Package Management
-- PNPM Workspaces
-- Turbo Repo
+- PNPM Workspaces (v8.14)
+- Turbo Repo (v2.3)
 - Changesets for versioning
 
 ### Code Quality
-- ESLint
-- Prettier
+- ESLint v9 with TypeScript support
+  - next/core-web-vitals preset
+  - @typescript-eslint/parser
+  - Custom configurations per package
+- Prettier v3.4
 - TypeScript strict mode
 - Husky for git hooks
 - Commitlint
 
 ### Testing
-- Jest
+- Jest v29.7
+  - TypeScript support via ts-jest
+  - ESM module support
+  - @jest/globals for type safety
 - React Testing Library
-- Playwright for E2E tests
-- Storybook for component testing
-- Chromatic for UI testing
+- Component-level unit tests
+- Integration tests
+- Custom test utilities in @greatforai/tests
 
 ### CI/CD & Deployment
 - GitHub Actions
+  - CI workflow for testing and building
+  - CD workflow for Vercel deployment
+  - Artifact sharing between workflows
+  - Caching for dependencies and builds
 - Vercel Platform
-- Docker for local development
-- Automated previews
+  - Preview deployments
+  - Production deployments
+  - Environment configuration
+  - Project aliasing
 
 ## Monitoring & Analytics
 
 ### Performance Monitoring
 - Vercel Analytics
+- Vercel Speed Insights
 - Core Web Vitals tracking
-- Error tracking with Sentry
-- Animation performance metrics
+- Error tracking
 
 ### Business Analytics
-- PostHog for product analytics
 - Custom event tracking
-- A/B testing capabilities
 - User journey analysis
 
 ## Infrastructure
@@ -159,6 +169,7 @@ greatforai/
 - Atomic Design for UI
 - Feature-based organization
 - Animation composition patterns
+- Test-driven development
 
 ## Third-Party Integrations
 
