@@ -59,14 +59,14 @@ jobs:
           echo "Build completed"
           ls -la apps/web/.next || true
         
-      - name: Upload repository
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: repo
+          name: build-artifacts
           path: |
-            .
-            !.git
-            !**/node_modules
+            apps/*/dist
+            packages/*/dist
+            apps/web/.next
             !**/.next/cache
           
   deploy:
@@ -79,10 +79,10 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Download repository
+      - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: repo
+          name: build-artifacts
           path: .
           
       - name: Setup Node.js
