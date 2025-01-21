@@ -1,3 +1,4 @@
+/* eslint-env node */
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -10,7 +11,7 @@ const nextConfig = {
     "@greatforai/ui"
   ],
   output: 'standalone',
-  outputFileTracingRoot: process.env.NEXT_PRIVATE_LOCAL_WEBPACK ? undefined : process.cwd(),
+  outputFileTracingRoot: '.',
   experimental: {
     externalDir: true
   }
