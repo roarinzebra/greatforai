@@ -25,6 +25,7 @@ export interface TextLoopProps {
     enter?: TargetAndTransition;
     exit?: TargetAndTransition;
   };
+  // eslint-disable-next-line no-unused-vars
   onIndexChange?: (index: number) => void;
   trigger?: boolean;
   mode?: AnimatePresenceProps['mode'];

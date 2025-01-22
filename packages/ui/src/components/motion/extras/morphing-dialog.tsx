@@ -8,6 +8,7 @@ export interface MorphingDialogProps {
   children?: React.ReactNode;
   className?: string;
   isOpen: boolean;
+  // eslint-disable-next-line no-unused-vars
   onOpenChange?: (isOpen: boolean) => void;
   closeOnEscape?: boolean;
   closeOnOverlayClick?: boolean;

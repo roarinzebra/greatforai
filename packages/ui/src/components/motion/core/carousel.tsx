@@ -17,12 +17,14 @@ export interface CarouselProps {
     damping?: number;
     mass?: number;
   };
+  // eslint-disable-next-line no-unused-vars
   onItemClick?: (itemIndex: number) => void;
   dragElastic?: number;
   dragMomentum?: boolean;
   dragConstraints?: { left: number; right: number };
   onDragStart?: () => void;
   onDragEnd?: () => void;
+  // eslint-disable-next-line no-unused-vars
   onDrag?: (dragInfo: PanInfo) => void;
 }
 

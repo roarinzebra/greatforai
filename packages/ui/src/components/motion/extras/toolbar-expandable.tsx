@@ -11,7 +11,8 @@ export interface ToolbarExpandableProps extends Omit<HTMLMotionProps<'div'>, 'ch
   expandDirection?: 'up' | 'down';
   expandedHeight?: number;
   collapsedHeight?: number;
-  onExpandChange?: (isExpanded: boolean) => void;
+  // eslint-disable-next-line no-unused-vars
+  onExpandedChange?: (isExpanded: boolean) => void;
 }
 
 export const ToolbarExpandable = React.forwardRef<HTMLDivElement, ToolbarExpandableProps>(({
@@ -21,7 +22,7 @@ export const ToolbarExpandable = React.forwardRef<HTMLDivElement, ToolbarExpanda
   expandDirection = 'down',
   expandedHeight = 200,
   collapsedHeight = 64,
-  onExpandChange,
+  onExpandedChange,
   ...props
 }, ref) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -29,10 +30,10 @@ export const ToolbarExpandable = React.forwardRef<HTMLDivElement, ToolbarExpanda
   const handleClick = React.useCallback(() => {
     setIsExpanded((prev) => {
       const next = !prev;
-      onExpandChange?.(next);
+      onExpandedChange?.(next);
       return next;
     });
-  }, [onExpandChange]);
+  }, [onExpandedChange]);
 
   return (
     <motion.div

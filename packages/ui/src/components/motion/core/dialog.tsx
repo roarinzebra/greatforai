@@ -9,7 +9,8 @@ export interface DialogProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   style?: React.CSSProperties;
   isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
+  // eslint-disable-next-line no-unused-vars
+  onOpenChange?: (isOpen: boolean) => void;
   overlayClassName?: string;
   overlayStyle?: React.CSSProperties;
   contentClassName?: string;
@@ -175,6 +176,8 @@ export interface DialogTriggerProps {
   children: React.ReactNode;
   className?: string;
   asChild?: boolean;
+  // eslint-disable-next-line no-unused-vars
+  onOpenChange?: (open: boolean) => void;
 }
 
 export interface DialogContentProps {

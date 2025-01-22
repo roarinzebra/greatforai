@@ -9,6 +9,7 @@ export interface PopoverProps {
   trigger: React.ReactNode;
   className?: string;
   isOpen: boolean | undefined;
+  // eslint-disable-next-line no-unused-vars
   onOpenChange?: (isOpen: boolean) => void;
   placement?: 'top' | 'right' | 'bottom' | 'left';
   offset?: number;

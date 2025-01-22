@@ -18,6 +18,7 @@ export interface InfiniteSliderProps {
     mass?: number;
   };
   gap?: number;
+  // eslint-disable-next-line no-unused-vars
   onItemClick?: (itemIndex: number) => void;
 }
 

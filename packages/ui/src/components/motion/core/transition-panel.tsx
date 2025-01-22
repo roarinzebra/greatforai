@@ -9,6 +9,7 @@ export interface TransitionPanelProps {
   className?: string;
   style?: React.CSSProperties;
   isOpen: boolean;
+  // eslint-disable-next-line no-unused-vars
   onOpenChange?: (isOpen: boolean) => void;
   variants?: {
     enter: TargetAndTransition;

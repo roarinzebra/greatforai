@@ -21,7 +21,8 @@ export const FormField = React.forwardRef<HTMLInputElement, FormFieldProps>(
     id,
     ...props 
   }, ref) => {
-    const inputId = id || React.useId();
+    const generatedId = React.useId();
+    const inputId = id || generatedId;
 
     return (
       <div className={cn('space-y-2', containerClassName)}>

@@ -9,6 +9,7 @@ export interface DisclosureProps {
   className?: string;
   style?: React.CSSProperties;
   isOpen?: boolean;
+  // eslint-disable-next-line no-unused-vars
   onOpenChange?: (isOpen: boolean) => void;
   variants?: {
     expanded: TargetAndTransition;
@@ -90,11 +91,15 @@ export interface DisclosureTriggerProps {
 export function DisclosureTrigger({ children, className }: DisclosureTriggerProps): React.ReactElement {
   const { isOpen, onOpenChange } = React.useContext(DisclosureContext);
   
+  const handleClick = () => {
+    onOpenChange(!isOpen);
+  };
+
   return (
     <button
       type="button"
       className={cn('w-full text-left', className)}
-      onClick={() => onOpenChange(!isOpen)}
+      onClick={handleClick}
       aria-expanded={isOpen}
     >
       {children}

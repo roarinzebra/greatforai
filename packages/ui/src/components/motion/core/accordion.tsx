@@ -13,11 +13,13 @@ export interface AccordionProps {
     collapsed: TargetAndTransition;
   };
   expandedValue?: React.Key | null;
+  // eslint-disable-next-line no-unused-vars
   onValueChange?: (value: React.Key | null) => void;
 }
 
 interface AccordionContextValue {
   expandedValue: React.Key | null;
+  // eslint-disable-next-line no-unused-vars
   onValueChange: (newValue: React.Key | null) => void;
   transition?: Transition;
   variants: {
