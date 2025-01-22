@@ -17,13 +17,13 @@ export interface CarouselProps {
     damping?: number;
     mass?: number;
   };
-  onItemClick?: (index: number) => void;
+  onItemClick?: (itemIndex: number) => void;
   dragElastic?: number;
   dragMomentum?: boolean;
   dragConstraints?: { left: number; right: number };
   onDragStart?: () => void;
   onDragEnd?: () => void;
-  onDrag?: (info: PanInfo) => void;
+  onDrag?: (dragInfo: PanInfo) => void;
 }
 
 export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(

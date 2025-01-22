@@ -3,195 +3,116 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import {
-  AnimatePresence,
   motion,
   TargetAndTransition,
-  Transition,
-  Variant,
-  Variants,
   type HTMLMotionProps,
+  type DOMMotionComponents,
+  type ForwardRefComponent,
+  type Spring,
+  type Tween
 } from 'framer-motion';
 
-export type PresetType = 'blur' | 'fade-in-blur' | 'scale' | 'fade' | 'slide' | 'rotate' | 'flip' | 'bounce';
-export type PerType = 'word' | 'char' | 'line';
-
-type TextVariants = {
+export type TextVariants = {
   hidden: TargetAndTransition;
   visible: TargetAndTransition;
   exit: TargetAndTransition;
 };
 
-interface TextEffectProps extends Omit<HTMLMotionProps<'span'>, 'children' | 'transition' | 'variants'> {
+export type PresetType = 'fade' | 'slide' | 'scale' | 'rotate' | 'flip';
+
+type MotionComponentType = keyof DOMMotionComponents;
+
+type TextTransition = Spring | Tween | (Spring & Tween);
+
+export interface TextEffectProps extends Omit<HTMLMotionProps<'span'>, 'children' | 'transition' | 'variants'> {
   children: string;
-  per?: PerType;
-  as?: keyof React.JSX.IntrinsicElements;
-  variants?: TextVariants;
-  className?: string;
   preset?: PresetType;
+  per?: 'char' | 'word' | 'line';
+  as?: MotionComponentType;
+  segmentWrapperClassName?: string;
+  variants?: TextVariants;
+  transition?: TextTransition;
   delay?: number;
-  speedReveal?: number;
-  speedSegment?: number;
   trigger?: boolean;
   onAnimationComplete?: () => void;
   onAnimationStart?: () => void;
-  segmentWrapperClassName?: string;
-  containerTransition?: Transition;
-  segmentTransition?: Transition;
-  style?: React.CSSProperties;
-  direction?: 'up' | 'down' | 'left' | 'right';
-  staggerChildren?: number;
-  staggerDirection?: 1 | -1;
-  transition?: Transition;
+  _speedReveal?: number;
+  speedSegment?: number;
 }
 
-const defaultStaggerTimes: Record<PerType, number> = {
-  char: 0.03,
-  word: 0.05,
-  line: 0.1,
-};
-
 const defaultVariants: TextVariants = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-  },
-  exit: {
-    opacity: 0,
-    y: -20,
-  }
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+  exit: { opacity: 0 }
 };
 
 const presetVariants: Record<PresetType, TextVariants> = {
   fade: defaultVariants,
+  slide: {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1 },
+    exit: { y: -20, opacity: 0 }
+  },
   scale: {
-    hidden: {
-      opacity: 0,
-      scale: 0.8,
-    },
-    visible: {
-      opacity: 1,
-      scale: 1,
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.8,
-    }
+    hidden: { scale: 0, opacity: 0 },
+    visible: { scale: 1, opacity: 1 },
+    exit: { scale: 0, opacity: 0 }
   },
   rotate: {
-    hidden: {
-      opacity: 0,
-      rotate: 0,
-    },
-    visible: {
-      opacity: 1,
-      rotate: 360,
-    },
-    exit: {
-      opacity: 0,
-      rotate: 0,
-    }
+    hidden: { rotate: -180, opacity: 0 },
+    visible: { rotate: 0, opacity: 1 },
+    exit: { rotate: 180, opacity: 0 }
   },
-  blur: defaultVariants,
-  'fade-in-blur': defaultVariants,
-  slide: defaultVariants,
-  flip: defaultVariants,
-  bounce: defaultVariants
+  flip: {
+    hidden: { rotateX: -180, opacity: 0 },
+    visible: { rotateX: 0, opacity: 1 },
+    exit: { rotateX: 180, opacity: 0 }
+  }
 };
 
-const AnimationComponent: React.FC<{
+const createVariantsWithTransition = (variants: TextVariants, transition: TextTransition): TextVariants => ({
+  hidden: { ...variants.hidden, transition },
+  visible: { ...variants.visible, transition },
+  exit: { ...variants.exit, transition }
+});
+
+interface AnimationComponentProps {
   segment: string;
   variants: TextVariants;
-  per: PerType;
+  per: 'char' | 'word' | 'line';
   segmentWrapperClassName?: string;
-}> = React.memo(({ segment, variants, per, segmentWrapperClassName }) => {
-  const content =
-    per === 'line' ? (
-      <motion.span variants={variants} className="block">
-        {segment}
-      </motion.span>
-    ) : per === 'word' ? (
-      <motion.span
-        aria-hidden="true"
-        variants={variants}
-        className="inline-block whitespace-pre"
-      >
-        {segment}
-      </motion.span>
-    ) : (
-      <motion.span className="inline-block whitespace-pre">
-        {segment.split('').map((char, charIndex) => (
+}
+
+const AnimationComponent: React.FC<AnimationComponentProps> = ({
+  segment,
+  variants,
+  per,
+  segmentWrapperClassName
+}) => {
+  if (per === 'char') {
+    return (
+      <motion.span className={cn('inline-block', segmentWrapperClassName)}>
+        {segment.split('').map((char, index) => (
           <motion.span
-            key={`char-${charIndex}`}
-            aria-hidden="true"
+            key={index}
+            className="inline-block"
             variants={variants}
-            className="inline-block whitespace-pre"
           >
             {char}
           </motion.span>
         ))}
       </motion.span>
     );
-
-  if (!segmentWrapperClassName) {
-    return content;
   }
 
-  const defaultWrapperClassName = per === 'line' ? 'block' : 'inline-block';
-
   return (
-    <span className={cn(defaultWrapperClassName, segmentWrapperClassName)}>
-      {content}
-    </span>
+    <motion.span
+      className={cn('inline-block', segmentWrapperClassName)}
+      variants={variants}
+    >
+      {segment}
+    </motion.span>
   );
-});
-
-AnimationComponent.displayName = 'AnimationComponent';
-
-const splitText = (text: string, per: PerType) => {
-  if (per === 'line') return text.split('\n');
-  return text.split(/(\s+)/);
-};
-
-const hasTransition = (variant: TargetAndTransition | undefined): variant is TargetAndTransition & { transition: Transition } => {
-  return variant !== undefined && 'transition' in variant;
-};
-
-const getTransition = (variant: TargetAndTransition | undefined): Transition | undefined => {
-  return hasTransition(variant) ? variant.transition : undefined;
-};
-
-const createVariantsWithTransition = (
-  baseVariants: TextVariants,
-  transition?: Transition & { exit?: Transition }
-): TextVariants => {
-  if (!transition) return baseVariants;
-
-  const { exit: exitTransition, ...mainTransition } = transition;
-
-  return {
-    ...baseVariants,
-    visible: {
-      ...baseVariants.visible,
-      transition: {
-        ...getTransition(baseVariants.visible),
-        ...mainTransition,
-      },
-    },
-    exit: {
-      ...baseVariants.exit,
-      transition: {
-        ...getTransition(baseVariants.exit),
-        ...mainTransition,
-        ...exitTransition,
-        staggerDirection: -1,
-      },
-    },
-    hidden: baseVariants.hidden
-  };
 };
 
 export const TextEffect = React.forwardRef<HTMLSpanElement, TextEffectProps>(({
@@ -199,30 +120,71 @@ export const TextEffect = React.forwardRef<HTMLSpanElement, TextEffectProps>(({
   className,
   style,
   preset = 'fade',
-  direction = 'up',
-  staggerChildren = 0.05,
-  staggerDirection = 1,
-  transition,
+  per = 'char',
+  as = 'span',
+  segmentWrapperClassName,
+  variants: customVariants,
+  delay = 0,
+  trigger = true,
+  onAnimationComplete,
+  onAnimationStart,
+  _speedReveal = 1,
+  speedSegment = 1,
   ...props
 }, ref) => {
   const variants = React.useMemo(() => {
-    const baseVariants = presetVariants[preset] || defaultVariants;
-    return transition ? createVariantsWithTransition(baseVariants, transition) : baseVariants;
-  }, [preset, transition]);
+    const baseVariants = customVariants || presetVariants[preset] || defaultVariants;
+    const withTransition = props.transition ? createVariantsWithTransition(baseVariants, props.transition) : baseVariants;
+    const tweenTransition = props.transition && 'type' in props.transition && props.transition.type === 'tween' && 'duration' in props.transition ? props.transition : null;
+    
+    return {
+      hidden: { ...withTransition.hidden },
+      visible: {
+        ...withTransition.visible,
+        transition: {
+          ...withTransition.visible?.transition,
+          delay,
+          ...(tweenTransition && tweenTransition.duration ? {
+            duration: tweenTransition.duration / _speedReveal
+          } : {}),
+          staggerChildren: withTransition.visible?.transition?.staggerChildren 
+            ? withTransition.visible.transition.staggerChildren / speedSegment 
+            : undefined
+        }
+      },
+      exit: { ...withTransition.exit }
+    };
+  }, [preset, props.transition, customVariants, delay, _speedReveal, speedSegment]);
+
+  const segments = React.useMemo(() => {
+    return per === 'line' ? children.split('\n') : children.split(/(\s+)/);
+  }, [children, per]);
+
+  const MotionComponent = motion[as] as ForwardRefComponent<HTMLSpanElement, HTMLMotionProps<"span">>;
 
   return (
-    <motion.span
+    <MotionComponent
       ref={ref}
       className={cn('inline-block', className)}
       style={style}
       initial="hidden"
-      animate="visible"
+      animate={trigger ? "visible" : "hidden"}
       exit="exit"
       variants={variants}
+      onAnimationComplete={onAnimationComplete}
+      onAnimationStart={onAnimationStart}
       {...props}
     >
-      {children}
-    </motion.span>
+      {segments.map((segment, index) => (
+        <AnimationComponent
+          key={`${segment}-${index}`}
+          segment={segment}
+          variants={variants}
+          per={per}
+          segmentWrapperClassName={segmentWrapperClassName}
+        />
+      ))}
+    </MotionComponent>
   );
 });
 

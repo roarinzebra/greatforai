@@ -18,7 +18,7 @@ export interface AccordionProps {
 
 interface AccordionContextValue {
   expandedValue: React.Key | null;
-  onValueChange: (value: React.Key | null) => void;
+  onValueChange: (newValue: React.Key | null) => void;
   transition?: Transition;
   variants: {
     expanded: TargetAndTransition;

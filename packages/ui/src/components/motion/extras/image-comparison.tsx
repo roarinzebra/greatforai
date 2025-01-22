@@ -2,112 +2,118 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring, HTMLMotionProps } from 'framer-motion';
 
-export interface ImageComparisonProps {
-  beforeImage: string;
-  afterImage: string;
-  className?: string;
-  direction?: 'horizontal' | 'vertical';
+export interface ImageComparisonProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
+  before: string;
+  after: string;
+  width?: number;
+  height?: number;
+  alt?: string;
   spring?: {
     stiffness?: number;
     damping?: number;
     mass?: number;
   };
-  initialPosition?: number;
-  labels?: {
-    before?: string;
-    after?: string;
-  };
-  onPositionChange?: (position: number) => void;
 }
 
 const defaultSpring = {
-  stiffness: 150,
-  damping: 15,
+  stiffness: 400,
+  damping: 30,
   mass: 1,
 };
 
 export const ImageComparison = React.forwardRef<HTMLDivElement, ImageComparisonProps>(
-  ({ 
-    beforeImage,
-    afterImage,
+  ({
     className,
-    direction = 'horizontal',
+    before,
+    after,
+    width = 500,
+    height = 300,
+    alt = 'Image comparison',
     spring = defaultSpring,
-    initialPosition = 50,
-    labels = {
-      before: 'Before',
-      after: 'After',
-    },
-    onPositionChange,
+    ...props
   }, ref) => {
-    const containerRef = React.useRef<HTMLDivElement>(null);
-    const position = useMotionValue(initialPosition);
-    const smoothPosition = useSpring(position, spring);
+    const [isHovered, setIsHovered] = React.useState(false);
+    const mouseX = useMotionValue(0);
+    const smoothX = useSpring(mouseX, spring);
 
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!containerRef.current) return;
+    const handleMouseMove = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const pct = (x / rect.width) * 100;
+      mouseX.set(Math.min(Math.max(pct, 0), 100));
+    }, [mouseX]);
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const value = direction === 'horizontal'
-        ? ((e.clientX - rect.left) / rect.width) * 100
-        : ((e.clientY - rect.top) / rect.height) * 100;
+    const handleMouseEnter = React.useCallback(() => {
+      setIsHovered(true);
+    }, []);
 
-      const clampedValue = Math.max(0, Math.min(100, value));
-      position.set(clampedValue);
-      onPositionChange?.(clampedValue);
-    };
+    const handleMouseLeave = React.useCallback(() => {
+      setIsHovered(false);
+      mouseX.set(50);
+    }, [mouseX]);
+
+    React.useEffect(() => {
+      mouseX.set(50);
+    }, [mouseX]);
 
     return (
       <motion.div
         ref={ref}
-        className={cn('relative aspect-video overflow-hidden', className)}
+        className={cn('relative overflow-hidden', className)}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{ width, height }}
+        {...props}
       >
-        <div
-          ref={containerRef}
-          className="relative h-full w-full cursor-ew-resize"
-          onMouseMove={handleMouseMove}
-        >
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${beforeImage})` }}
-          >
-            {labels.before && (
-              <div className="absolute left-4 top-4 rounded-lg bg-black/50 px-3 py-1 text-sm text-white">
-                {labels.before}
-              </div>
-            )}
-          </div>
-          <motion.div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: `url(${afterImage})`,
-              clipPath: direction === 'horizontal'
-                ? `inset(0 ${100 - smoothPosition.get()}% 0 0)`
-                : `inset(0 0 ${100 - smoothPosition.get()}% 0)`,
-            }}
-          >
-            {labels.after && (
-              <div className="absolute right-4 top-4 rounded-lg bg-black/50 px-3 py-1 text-sm text-white">
-                {labels.after}
-              </div>
-            )}
-          </motion.div>
-          <motion.div
-            className={cn(
-              'absolute bg-white',
-              direction === 'horizontal'
-                ? 'top-0 bottom-0 w-1 cursor-ew-resize'
-                : 'left-0 right-0 h-1 cursor-ns-resize'
-            )}
-            style={{
-              ...(direction === 'horizontal'
-                ? { left: smoothPosition }
-                : { top: smoothPosition }),
-            }}
+        <div className="absolute inset-0">
+          <img
+            src={before}
+            alt={`${alt} - Before`}
+            className="h-full w-full object-cover"
           />
         </div>
+        <motion.div
+          className="absolute inset-0"
+          style={{ clipPath: `inset(0 ${100 - smoothX.get()}% 0 0)` }}
+        >
+          <img
+            src={after}
+            alt={`${alt} - After`}
+            className="h-full w-full object-cover"
+          />
+        </motion.div>
+        <motion.div
+          className="absolute inset-y-0"
+          style={{ left: `${smoothX.get()}%` }}
+        >
+          <div className="relative h-full">
+            <div className="absolute inset-y-0 -left-px w-0.5 bg-white" />
+            <div
+              className={cn(
+                'absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white p-2 transition-transform',
+                isHovered ? 'scale-110' : 'scale-100'
+              )}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-black"
+              >
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </div>
+          </div>
+        </motion.div>
       </motion.div>
     );
   }

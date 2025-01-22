@@ -8,7 +8,7 @@ export interface TransitionPanelProps {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
-  isOpen?: boolean;
+  isOpen: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   variants?: {
     enter: TargetAndTransition;

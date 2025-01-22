@@ -2,14 +2,14 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { motion, HTMLMotionProps } from 'framer-motion';
 
-export interface SpinningTextProps {
+export interface SpinningTextProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
   children: string;
   className?: string;
   radius?: number;
-  fontSize?: number | string;
-  letterSpacing?: number | string;
+  fontSize?: number;
+  letterSpacing?: number;
   duration?: number;
   direction?: 'clockwise' | 'counterclockwise';
   spring?: {
@@ -20,76 +20,71 @@ export interface SpinningTextProps {
   onRotationComplete?: () => void;
 }
 
-const defaultSpring: Required<SpinningTextProps['spring']> = {
-  stiffness: 150,
-  damping: 15,
-  mass: 1,
+const defaultSpring = {
+  stiffness: 500,
+  damping: 50,
+  mass: 0.5
 };
 
-export const SpinningText = React.forwardRef<HTMLDivElement, SpinningTextProps>(
-  ({ 
-    children,
-    className,
-    radius = 100,
-    fontSize = '1em',
-    letterSpacing = '0.2em',
-    duration = 10,
-    direction = 'clockwise',
-    spring = defaultSpring,
-    onRotationComplete,
-  }, ref) => {
-    const characters = children.split('');
-    const numChars = characters.length;
-    const angleStep = (2 * Math.PI) / numChars;
+export const SpinningText = React.forwardRef<HTMLDivElement, SpinningTextProps>(({
+  children,
+  className,
+  radius = 100,
+  fontSize = 20,
+  letterSpacing = 1,
+  duration = 10,
+  direction = 'clockwise',
+  spring = defaultSpring,
+  onRotationComplete,
+  ...props
+}, ref) => {
+  const chars = React.useMemo(() => children.split(''), [children]);
+  const numChars = chars.length;
+  const angleStep = (2 * Math.PI) / numChars;
 
-    return (
-      <motion.div
-        ref={ref}
-        className={cn('relative', className)}
-        style={{
-          width: radius * 2,
-          height: radius * 2,
-        }}
-      >
-        {characters.map((char, i) => {
-          const angle = i * angleStep;
-          const x = radius + Math.cos(angle) * radius;
-          const y = radius + Math.sin(angle) * radius;
-          const rotate = (angle * 180) / Math.PI;
+  return (
+    <motion.div
+      ref={ref}
+      className={cn('relative', className)}
+      style={{
+        width: radius * 2,
+        height: radius * 2
+      }}
+      {...props}
+    >
+      {chars.map((char, i) => {
+        const angle = angleStep * i;
+        const x = radius + radius * Math.cos(angle);
+        const y = radius + radius * Math.sin(angle);
 
-          return (
-            <motion.span
-              key={i}
-              className="absolute transform-gpu"
-              style={{
-                left: x,
-                top: y,
-                fontSize,
-                letterSpacing,
-                transform: `translate(-50%, -50%) rotate(${rotate + 90}deg)`,
-                transformOrigin: 'center',
-              }}
-              animate={{
-                rotate: [
-                  rotate + 90,
-                  rotate + (direction === 'clockwise' ? 450 : -270),
-                ],
-              }}
-              transition={{
-                duration,
-                repeat: Infinity,
-                ease: 'linear',
-                ...spring,
-              }}
-              onAnimationComplete={onRotationComplete}
-            >
-              {char}
-            </motion.span>
-          );
-        })}
-      </motion.div>
-    );
-  }
-);
+        return (
+          <motion.span
+            key={i}
+            className="absolute transform -translate-x-1/2 -translate-y-1/2"
+            style={{
+              left: x,
+              top: y,
+              fontSize,
+              letterSpacing,
+              transformOrigin: `${radius}px ${radius}px`
+            }}
+            animate={{
+              rotate: direction === 'clockwise' ? 360 : -360
+            }}
+            transition={{
+              ...spring,
+              repeat: Infinity,
+              duration,
+              ease: 'linear'
+            }}
+            onAnimationComplete={onRotationComplete}
+          >
+            {char}
+          </motion.span>
+        );
+      })}
+    </motion.div>
+  );
+});
 
 SpinningText.displayName = 'SpinningText'; 

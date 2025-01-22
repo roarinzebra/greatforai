@@ -2,89 +2,74 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { motion, useScroll, useSpring, useTransform, HTMLMotionProps } from 'framer-motion';
 
-export interface ScrollProgressProps {
-  children?: React.ReactNode;
+export interface ScrollProgressProps extends Omit<HTMLMotionProps<'div'>, 'style'> {
   className?: string;
-  as?: React.ElementType;
+  origin?: 'left' | 'right' | 'top' | 'bottom';
+  orientation?: 'horizontal' | 'vertical';
+  offset?: ['start start' | 'start end' | 'end start' | 'end end'];
+  target?: React.RefObject<HTMLElement>;
   spring?: {
     stiffness?: number;
     damping?: number;
     mass?: number;
   };
-  origin?: 'left' | 'right' | 'top' | 'bottom';
-  orientation?: 'horizontal' | 'vertical';
-  offset?: ['start start' | 'start end' | 'end start' | 'end end'];
-  target?: React.RefObject<HTMLElement>;
-  onProgressChange?: (progress: number) => void;
-  style?: React.CSSProperties;
 }
 
-const defaultSpring: Required<ScrollProgressProps['spring']> = {
-  stiffness: 100,
-  damping: 30,
-  mass: 1,
+const defaultSpring = {
+  stiffness: 500,
+  damping: 50,
+  mass: 0.5
 };
 
-export const ScrollProgress = React.forwardRef<HTMLDivElement, ScrollProgressProps>(
-  ({ 
-    children,
-    className,
-    as: Component = motion.div,
-    spring = defaultSpring,
-    origin = 'left',
-    orientation = 'horizontal',
-    offset = ['start end'],
+export const ScrollProgress = React.forwardRef<HTMLDivElement, ScrollProgressProps>(({
+  className,
+  origin = 'left',
+  orientation = 'horizontal',
+  offset = ['start end'],
+  target,
+  spring = defaultSpring,
+  ...props
+}, ref) => {
+  const { scrollYProgress } = useScroll({
     target,
-    onProgressChange,
-    style,
-  }, ref) => {
-    const { scrollYProgress } = useScroll({
-      target,
-      offset,
-    });
+    offset
+  });
 
-    const smoothProgress = useSpring(scrollYProgress, spring);
+  const smoothProgress = useSpring(scrollYProgress, spring);
+  const scaleX = useTransform(smoothProgress, [0, 1], [0, 1]);
+  const scaleY = useTransform(smoothProgress, [0, 1], [0, 1]);
 
-    const scaleX = useTransform(smoothProgress, [0, 1], [0, 1]);
-    const scaleY = useTransform(smoothProgress, [0, 1], [0, 1]);
+  const transformOrigin = React.useMemo(() => {
+    switch (origin) {
+      case 'right':
+        return 'right';
+      case 'top':
+        return 'top';
+      case 'bottom':
+        return 'bottom';
+      default:
+        return 'left';
+    }
+  }, [origin]);
 
-    React.useEffect(() => {
-      if (!onProgressChange) return;
-      return smoothProgress.on('change', onProgressChange);
-    }, [smoothProgress, onProgressChange]);
-
-    const getTransformOrigin = () => {
-      switch (origin) {
-        case 'left':
-          return 'left center';
-        case 'right':
-          return 'right center';
-        case 'top':
-          return 'center top';
-        case 'bottom':
-          return 'center bottom';
-        default:
-          return 'left center';
-      }
-    };
-
-    return (
-      <Component
-        ref={ref}
-        className={cn('fixed inset-x-0 top-0 h-1 bg-black/10', className)}
-        style={{
-          ...(orientation === 'horizontal'
-            ? { scaleX, transformOrigin: getTransformOrigin() }
-            : { scaleY, transformOrigin: getTransformOrigin() }),
-          ...style,
-        }}
-      >
-        {children}
-      </Component>
-    );
-  }
-);
+  return (
+    <motion.div
+      ref={ref}
+      className={cn(
+        'fixed inset-0 pointer-events-none',
+        orientation === 'horizontal' ? 'h-1' : 'w-1',
+        className
+      )}
+      style={{
+        transformOrigin,
+        scaleX: orientation === 'horizontal' ? scaleX : 1,
+        scaleY: orientation === 'vertical' ? scaleY : 1
+      }}
+      {...props}
+    />
+  );
+});
 
 ScrollProgress.displayName = 'ScrollProgress'; 

@@ -5,32 +5,29 @@ import { AnimatePresence } from 'framer-motion';
 
 export interface PresenceProps {
   children: React.ReactNode;
+  custom?: unknown;
+  presenceAffectsLayout?: boolean;
   mode?: 'sync' | 'wait' | 'popLayout';
   initial?: boolean;
-  onExitComplete?: () => void;
-  custom?: any;
-  presenceAffectsLayout?: boolean;
 }
 
-export function Presence({ 
+export const Presence = ({
   children,
-  mode = 'sync',
-  initial = true,
-  onExitComplete,
   custom,
-  presenceAffectsLayout = true,
-}: PresenceProps) {
+  presenceAffectsLayout,
+  mode,
+  initial,
+}: PresenceProps): React.JSX.Element => {
   return (
     <AnimatePresence
-      mode={mode}
-      initial={initial}
-      onExitComplete={onExitComplete}
       custom={custom}
       presenceAffectsLayout={presenceAffectsLayout}
+      mode={mode}
+      initial={initial}
     >
       {children}
     </AnimatePresence>
   );
-}
+};
 
 Presence.displayName = 'Presence'; 

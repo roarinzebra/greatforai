@@ -18,7 +18,7 @@ export interface InfiniteSliderProps {
     mass?: number;
   };
   gap?: number;
-  onItemClick?: (index: number) => void;
+  onItemClick?: (itemIndex: number) => void;
 }
 
 export const InfiniteSlider = React.forwardRef<HTMLDivElement, InfiniteSliderProps>(

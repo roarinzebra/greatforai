@@ -8,8 +8,8 @@ export interface DisclosureProps {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  isOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
   variants?: {
     expanded: TargetAndTransition;
     collapsed: TargetAndTransition;
@@ -52,10 +52,10 @@ const defaultVariants: {
 };
 
 const DisclosureContext = React.createContext<{
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
 }>({
-  open: false,
+  isOpen: false,
   onOpenChange: () => {},
 });
 
@@ -63,14 +63,14 @@ export function Disclosure({
   children, 
   className, 
   style, 
-  open = false, 
+  isOpen = false, 
   onOpenChange, 
   variants = defaultVariants, 
   transition 
 }: DisclosureProps): React.ReactElement {
   const value = React.useMemo(
-    () => ({ open, onOpenChange: onOpenChange ?? (() => {}), variants, transition }),
-    [open, onOpenChange, variants, transition]
+    () => ({ isOpen, onOpenChange: onOpenChange ?? (() => {}), variants, transition }),
+    [isOpen, onOpenChange, variants, transition]
   );
 
   return (
@@ -88,14 +88,14 @@ export interface DisclosureTriggerProps {
 }
 
 export function DisclosureTrigger({ children, className }: DisclosureTriggerProps): React.ReactElement {
-  const { open, onOpenChange } = React.useContext(DisclosureContext);
+  const { isOpen, onOpenChange } = React.useContext(DisclosureContext);
   
   return (
     <button
       type="button"
       className={cn('w-full text-left', className)}
-      onClick={() => onOpenChange(!open)}
-      aria-expanded={open}
+      onClick={() => onOpenChange(!isOpen)}
+      aria-expanded={isOpen}
     >
       {children}
     </button>
@@ -108,11 +108,11 @@ export interface DisclosureContentProps {
 }
 
 export function DisclosureContent({ children, className }: DisclosureContentProps): React.ReactElement {
-  const { open } = React.useContext(DisclosureContext);
+  const { isOpen } = React.useContext(DisclosureContext);
   
   return (
     <AnimatePresence>
-      {open && (
+      {isOpen && (
         <motion.div
           initial="collapsed"
           animate="expanded"

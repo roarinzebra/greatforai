@@ -2,11 +2,10 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring, HTMLMotionProps } from 'framer-motion';
 
-export interface MagneticProps {
-  children: React.ReactNode;
-  className?: string;
+export interface MagneticProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
+  children?: React.ReactNode;
   strength?: number;
   radius?: number;
   spring?: {
@@ -14,27 +13,24 @@ export interface MagneticProps {
     damping?: number;
     mass?: number;
   };
-  onMouseMove?: (e: React.MouseEvent<HTMLDivElement>) => void;
-  onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void;
-  onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const defaultSpring = {
-  stiffness: 150,
-  damping: 15,
+  stiffness: 400,
+  damping: 30,
   mass: 1,
 };
 
 export const Magnetic = React.forwardRef<HTMLDivElement, MagneticProps>(
-  ({ 
-    children,
+  ({
     className,
-    strength = 50,
-    radius = 800,
+    children,
+    strength = 30,
+    radius = 400,
     spring = defaultSpring,
     onMouseMove,
-    onMouseEnter,
     onMouseLeave,
+    ...props
   }, ref) => {
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
@@ -42,51 +38,44 @@ export const Magnetic = React.forwardRef<HTMLDivElement, MagneticProps>(
     const smoothX = useSpring(mouseX, spring);
     const smoothY = useSpring(mouseY, spring);
 
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleMouseMove = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
       const rect = e.currentTarget.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      
-      const distanceX = e.clientX - centerX;
-      const distanceY = e.clientY - centerY;
-      const distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+      const distance = Math.sqrt(
+        Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
+      );
 
       if (distance < radius) {
-        const scaleFactor = strength / 100;
-        const distanceRatio = Math.min(distance / radius, 1);
-        const moveX = distanceX * scaleFactor * (1 - distanceRatio);
-        const moveY = distanceY * scaleFactor * (1 - distanceRatio);
-        mouseX.set(moveX);
-        mouseY.set(moveY);
+        const scaledStrength = (1 - distance / radius) * strength;
+        mouseX.set((e.clientX - centerX) * scaledStrength);
+        mouseY.set((e.clientY - centerY) * scaledStrength);
       } else {
         mouseX.set(0);
         mouseY.set(0);
       }
 
       onMouseMove?.(e);
-    };
+    }, [mouseX, mouseY, radius, strength, onMouseMove]);
 
-    const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-      onMouseEnter?.(e);
-    };
-
-    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleMouseLeave = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
       mouseX.set(0);
       mouseY.set(0);
       onMouseLeave?.(e);
-    };
+    }, [mouseX, mouseY, onMouseLeave]);
 
     return (
       <motion.div
         ref={ref}
         className={cn('inline-block', className)}
-        style={{
-          x: smoothX,
-          y: smoothY,
-        }}
         onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        style={{
+          transform: 'translate(var(--x), var(--y))',
+          '--x': smoothX.get() + 'px',
+          '--y': smoothY.get() + 'px',
+        } as React.CSSProperties}
+        {...props}
       >
         {children}
       </motion.div>

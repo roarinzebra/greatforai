@@ -9,7 +9,6 @@ interface TextShimmerWaveProps extends Omit<HTMLMotionProps<'span'>, 'animate' |
   shimmerColor?: string;
   waveLength?: number;
   waveCount?: number;
-  waveHeight?: number;
   perspective?: number;
   rotateX?: number;
   rotateY?: number;
@@ -29,7 +28,6 @@ export const TextShimmerWave = React.forwardRef<HTMLSpanElement, TextShimmerWave
   shimmerColor = 'hsl(0 0% 90%)',
   waveLength = 100,
   waveCount = 3,
-  waveHeight = 20,
   perspective = 500,
   rotateX = 45,
   rotateY = 0,

@@ -5,31 +5,33 @@ import { MotionConfig } from 'framer-motion';
 
 export interface MotionProviderProps {
   children: React.ReactNode;
-  reducedMotion?: 'always' | 'never' | 'user';
+  reducedMotion?: 'user' | 'never' | 'always';
   transition?: {
-    type?: 'tween' | 'spring';
+    type?: 'spring' | 'tween';
     duration?: number;
+    bounce?: number;
+    ease?: string;
+    mass?: number;
     stiffness?: number;
     damping?: number;
-    mass?: number;
-    bounce?: number;
   };
 }
 
 const defaultTransition = {
-  type: 'tween' as const,
-  duration: 0.2,
-  stiffness: 100,
-  damping: 10,
+  type: 'spring' as const,
+  duration: 0.3,
+  bounce: 0.25,
+  ease: 'easeInOut',
   mass: 1,
-  bounce: 0,
+  stiffness: 150,
+  damping: 30,
 };
 
-export function MotionProvider({ 
+export const MotionProvider = ({
   children,
   reducedMotion = 'never',
   transition = defaultTransition,
-}: MotionProviderProps) {
+}: MotionProviderProps): React.JSX.Element => {
   return (
     <MotionConfig
       reducedMotion={reducedMotion}
@@ -38,4 +40,6 @@ export function MotionProvider({
       {children}
     </MotionConfig>
   );
-} 
+};
+
+MotionProvider.displayName = 'MotionProvider'; 

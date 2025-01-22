@@ -2,71 +2,52 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring, HTMLMotionProps } from 'framer-motion';
 
-export interface GlowEffectProps {
-  children: React.ReactNode;
-  className?: string;
+export interface GlowEffectProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
+  children?: React.ReactNode;
   color?: string;
   size?: number;
   blur?: number;
   opacity?: number;
-  offset?: {
-    x?: number;
-    y?: number;
-  };
-  spring?: {
-    stiffness?: number;
-    damping?: number;
-    mass?: number;
-  };
-  onMouseMove?: (e: React.MouseEvent<HTMLDivElement>) => void;
-  onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void;
-  onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const defaultSpring = {
-  stiffness: 150,
-  damping: 15,
+  stiffness: 400,
+  damping: 30,
   mass: 1,
 };
 
 export const GlowEffect = React.forwardRef<HTMLDivElement, GlowEffectProps>(
-  ({ 
-    children,
+  ({
     className,
-    color = 'hsl(0 0% 100% / 0.5)',
-    size = 300,
-    blur = 30,
-    opacity = 0.15,
-    offset = { x: 0, y: 0 },
-    spring = defaultSpring,
-    onMouseMove,
-    onMouseEnter,
-    onMouseLeave,
+    children,
+    color = 'rgb(var(--primary))',
+    size = 400,
+    blur = 100,
+    opacity = 0.5,
+    ...props
   }, ref) => {
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
-    const smoothX = useSpring(mouseX, spring);
-    const smoothY = useSpring(mouseY, spring);
+    const smoothX = useSpring(mouseX, defaultSpring);
+    const smoothY = useSpring(mouseY, defaultSpring);
 
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      mouseX.set(e.clientX - rect.left);
-      mouseY.set(e.clientY - rect.top);
-      onMouseMove?.(e);
-    };
+    const handleMouseMove = React.useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+      const rect = event.currentTarget.getBoundingClientRect();
+      mouseX.set(event.clientX - rect.left);
+      mouseY.set(event.clientY - rect.top);
+    }, [mouseX, mouseY]);
 
-    const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-      onMouseEnter?.(e);
-    };
+    const handleMouseEnter = React.useCallback(() => {
+      // Intentionally empty as we don't need to handle mouse enter
+    }, []);
 
-    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleMouseLeave = React.useCallback(() => {
       mouseX.set(0);
       mouseY.set(0);
-      onMouseLeave?.(e);
-    };
+    }, [mouseX, mouseY]);
 
     return (
       <motion.div
@@ -75,14 +56,14 @@ export const GlowEffect = React.forwardRef<HTMLDivElement, GlowEffectProps>(
         onMouseMove={handleMouseMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        {...props}
       >
         <motion.div
-          className="pointer-events-none absolute -inset-px"
+          className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           style={{
             background: `radial-gradient(${size}px circle at ${smoothX}px ${smoothY}px, ${color}, transparent)`,
-            opacity,
             filter: `blur(${blur}px)`,
-            transform: `translate(${offset.x}px, ${offset.y}px)`,
+            opacity,
           }}
         />
         {children}

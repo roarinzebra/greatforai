@@ -12,8 +12,8 @@ export interface TextMorphProps extends Omit<HTMLMotionProps<'span'>, 'children'
     duration?: number;
     ease?: string;
   };
-  preserveSpaces?: boolean;
-  preserveCharacters?: boolean;
+  trigger?: boolean;
+  onMorphComplete?: () => void;
 }
 
 export const TextMorph = React.forwardRef<HTMLSpanElement, TextMorphProps>(({
@@ -26,21 +26,26 @@ export const TextMorph = React.forwardRef<HTMLSpanElement, TextMorphProps>(({
     duration: 0.5,
     ease: 'easeInOut',
   },
-  preserveSpaces = true,
-  preserveCharacters = true,
+  trigger = true,
+  onMorphComplete,
   ...props
 }, ref) => {
   const [currentText, setCurrentText] = React.useState(children[0]);
 
   React.useEffect(() => {
+    if (!trigger) return;
+
     let index = 0;
     const timer = setInterval(() => {
       index = (index + 1) % children.length;
       setCurrentText(children[index]);
+      if (index === children.length - 1) {
+        onMorphComplete?.();
+      }
     }, interval);
 
     return () => clearInterval(timer);
-  }, [children, interval]);
+  }, [children, interval, trigger, onMorphComplete]);
 
   return (
     <motion.span

@@ -8,8 +8,8 @@ export interface DialogProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
   overlayClassName?: string;
   overlayStyle?: React.CSSProperties;
   contentClassName?: string;
@@ -63,7 +63,7 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(({
   children,
   className,
   style,
-  open,
+  isOpen,
   onOpenChange,
   overlayClassName,
   overlayStyle,
@@ -81,7 +81,7 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(({
   const [lastActiveElement] = React.useState(() => typeof document !== 'undefined' ? document.activeElement : null);
 
   React.useEffect(() => {
-    if (open) {
+    if (isOpen) {
       const element = initialFocus?.current || dialogRef.current;
       element?.focus();
 
@@ -99,10 +99,10 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(({
         document.body.style.overflow = '';
       }
     }
-  }, [open, initialFocus, finalFocus, lastActiveElement, preventScroll]);
+  }, [isOpen, initialFocus, finalFocus, lastActiveElement, preventScroll]);
 
   React.useEffect(() => {
-    if (!open || !closeOnEscape) return;
+    if (!isOpen || !closeOnEscape) return;
 
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && onOpenChange) {
@@ -112,7 +112,7 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(({
 
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [open, onOpenChange, closeOnEscape]);
+  }, [isOpen, onOpenChange, closeOnEscape]);
 
   const handleOverlayClick = React.useCallback(() => {
     if (closeOnOverlayClick && onOpenChange) {
@@ -122,7 +122,7 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(({
 
   return (
     <AnimatePresence>
-      {open && (
+      {isOpen && (
         <div
           ref={ref}
           className={cn('fixed inset-0 z-50', className)}
@@ -181,8 +181,8 @@ export interface DialogContentProps {
   children: React.ReactNode;
   className?: string;
   container?: HTMLElement;
-  onOpenAutoFocus?: (event: Event) => void;
-  onCloseAutoFocus?: (event: Event) => void;
+  onOpenAutoFocus?: () => void;
+  onCloseAutoFocus?: () => void;
 }
 
 export interface DialogHeaderProps {
@@ -274,12 +274,12 @@ export function DialogContent({
             transition={{ type: 'spring', duration: 0.3 }}
             onAnimationStart={() => {
               if (onOpenAutoFocus) {
-                onOpenAutoFocus(new Event('focus'));
+                onOpenAutoFocus();
               }
             }}
             onAnimationComplete={() => {
               if (onCloseAutoFocus) {
-                onCloseAutoFocus(new Event('focus'));
+                onCloseAutoFocus();
               }
             }}
           >
