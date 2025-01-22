@@ -13,6 +13,12 @@ export * from '@/types';
 // Layout components
 export * from './components/layout';
 
+// Form components
+export * from './components/form';
+
+// Motion components
+export * from './components/motion';
+
 // Utility functions
 export * from './lib/utils';
 

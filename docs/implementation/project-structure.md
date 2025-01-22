@@ -765,18 +765,40 @@ greatforai/
 │           │   │       ├── modals/       # Modal dialogs
 │           │   │       └── forms/        # Form components
 │           │   └── motion/          # Motion components
-│           │       ├── animations/     # Animation components
-│           │       │   ├── fade/         # Fade effects
-│           │       │   ├── slide/        # Slide effects
-│           │       │   └── scale/        # Scale effects
-│           │       ├── transitions/    # Transition components
-│           │       │   ├── page/         # Page transitions
-│           │       │   ├── modal/        # Modal transitions
-│           │       │   └── menu/         # Menu transitions
-│           │       └── interactions/   # Interactive animations
-│           │           ├── hover/        # Hover effects
-│           │           ├── press/        # Press effects
-│           │           └── focus/        # Focus effects
+│           │       ├── core/           # Core motion components
+│           │       │   ├── text/          # Text motion effects
+│           │       │   │   ├── effect/       # Text effect component
+│           │       │   │   ├── loop/         # Text loop component
+│           │       │   │   ├── morph/        # Text morph component
+│           │       │   │   │   ├── roll/         # Text roll component
+│           │       │   │   │   ├── scramble/     # Text scramble component
+│           │       │   │   │   ├── shimmer/      # Text shimmer component
+│           │       │   │   │   └── shimmer-wave/ # Text shimmer wave component
+│           │       │   │   └── extras/        # Extra motion effects
+│           │       │   │       ├── in-view/       # In view component
+│           │       │   │       ├── infinite-slider/ # Infinite slider component
+│           │       │   │       ├── scroll/        # Scroll progress component
+│           │       │   │       ├── spotlight/     # Spotlight effect
+│           │       │   │       ├── spinning/      # Spinning text
+│           │       │   │       ├── tilt/          # Tilt effect
+│           │       │   │       └── morphing/      # Morphing dialog
+│           │       │   ├── animations/     # Animation components
+│           │       │   │   ├── fade/         # Fade effects
+│           │       │   │   ├── slide/        # Slide effects
+│           │       │   │   └── scale/        # Scale effects
+│           │       │   ├── transitions/   # Transition components
+│           │       │   │   ├── page/         # Page transitions
+│           │       │   │   ├── modal/        # Modal transitions
+│           │       │   │   └── menu/         # Menu transitions
+│           │       │   ├── interactions/  # Interactive animations
+│           │       │   │   ├── hover/        # Hover effects
+│           │       │   │   ├── press/        # Press effects
+│           │       │   │   └── focus/        # Focus effects
+│           │       │   └── utils/         # Utility components
+│           │       │       ├── provider.tsx   # Motion provider
+│           │       │       ├── transition.tsx # Transition utilities
+│           │       │       ├── presence.tsx   # Presence utilities
+│           │       │       └── scroll.tsx     # Scroll utilities
 │           └── styles/           # Style system
 │               ├── base/            # Base styles
 │               │   ├── reset/         # CSS reset
