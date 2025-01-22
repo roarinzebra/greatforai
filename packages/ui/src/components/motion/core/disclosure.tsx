@@ -8,9 +8,9 @@ export interface DisclosureProps {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
-  isOpen?: boolean;
+  disclosureIsOpen?: boolean;
   // eslint-disable-next-line no-unused-vars
-  onOpenChange?: (isOpen: boolean) => void;
+  onOpenChange?: (disclosureIsOpen: boolean) => void;
   variants?: {
     expanded: TargetAndTransition;
     collapsed: TargetAndTransition;
@@ -52,11 +52,14 @@ const defaultVariants: {
   },
 };
 
-const DisclosureContext = React.createContext<{
-  isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-}>({
-  isOpen: false,
+interface DisclosureContextType {
+  disclosureIsOpen: boolean;
+  // eslint-disable-next-line no-unused-vars
+  onOpenChange: (disclosureIsOpen: boolean) => void;
+}
+
+const DisclosureContext = React.createContext<DisclosureContextType>({
+  disclosureIsOpen: false,
   onOpenChange: () => {},
 });
 
@@ -64,14 +67,14 @@ export function Disclosure({
   children, 
   className, 
   style, 
-  isOpen = false, 
+  disclosureIsOpen = false, 
   onOpenChange, 
   variants = defaultVariants, 
   transition 
 }: DisclosureProps): React.ReactElement {
   const value = React.useMemo(
-    () => ({ isOpen, onOpenChange: onOpenChange ?? (() => {}), variants, transition }),
-    [isOpen, onOpenChange, variants, transition]
+    () => ({ disclosureIsOpen: disclosureIsOpen, onOpenChange: onOpenChange ?? (() => {}), variants, transition }),
+    [disclosureIsOpen, onOpenChange, variants, transition]
   );
 
   return (
@@ -89,17 +92,13 @@ export interface DisclosureTriggerProps {
 }
 
 export function DisclosureTrigger({ children, className }: DisclosureTriggerProps): React.ReactElement {
-  const { isOpen, onOpenChange } = React.useContext(DisclosureContext);
+  const { disclosureIsOpen: isOpen, onOpenChange } = React.useContext(DisclosureContext);
   
-  const handleClick = () => {
-    onOpenChange(!isOpen);
-  };
-
   return (
     <button
       type="button"
       className={cn('w-full text-left', className)}
-      onClick={handleClick}
+      onClick={() => onOpenChange(!isOpen)}
       aria-expanded={isOpen}
     >
       {children}
@@ -113,7 +112,7 @@ export interface DisclosureContentProps {
 }
 
 export function DisclosureContent({ children, className }: DisclosureContentProps): React.ReactElement {
-  const { isOpen } = React.useContext(DisclosureContext);
+  const { disclosureIsOpen: isOpen } = React.useContext(DisclosureContext);
   
   return (
     <AnimatePresence>

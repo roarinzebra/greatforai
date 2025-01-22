@@ -8,9 +8,9 @@ export interface DialogProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
-  isOpen: boolean;
+  dialogIsOpen: boolean;
   // eslint-disable-next-line no-unused-vars
-  onOpenChange?: (isOpen: boolean) => void;
+  onOpenChange?: (dialogIsOpen: boolean) => void;
   overlayClassName?: string;
   overlayStyle?: React.CSSProperties;
   contentClassName?: string;
@@ -64,7 +64,7 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(({
   children,
   className,
   style,
-  isOpen,
+  dialogIsOpen,
   onOpenChange,
   overlayClassName,
   overlayStyle,
@@ -82,7 +82,7 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(({
   const [lastActiveElement] = React.useState(() => typeof document !== 'undefined' ? document.activeElement : null);
 
   React.useEffect(() => {
-    if (isOpen) {
+    if (dialogIsOpen) {
       const element = initialFocus?.current || dialogRef.current;
       element?.focus();
 
@@ -100,10 +100,10 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(({
         document.body.style.overflow = '';
       }
     }
-  }, [isOpen, initialFocus, finalFocus, lastActiveElement, preventScroll]);
+  }, [dialogIsOpen, initialFocus, finalFocus, lastActiveElement, preventScroll]);
 
   React.useEffect(() => {
-    if (!isOpen || !closeOnEscape) return;
+    if (!dialogIsOpen || !closeOnEscape) return;
 
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && onOpenChange) {
@@ -113,7 +113,7 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(({
 
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onOpenChange, closeOnEscape]);
+  }, [dialogIsOpen, onOpenChange, closeOnEscape]);
 
   const handleOverlayClick = React.useCallback(() => {
     if (closeOnOverlayClick && onOpenChange) {
@@ -123,7 +123,7 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(({
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {dialogIsOpen && (
         <div
           ref={ref}
           className={cn('fixed inset-0 z-50', className)}
@@ -211,13 +211,16 @@ export interface DialogCloseProps {
   disabled?: boolean;
 }
 
-const DialogContext = React.createContext<{
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+interface DialogContextType {
+  dialogIsOpen: boolean;
+  // eslint-disable-next-line no-unused-vars
+  onOpenChange: (dialogIsOpen: boolean) => void;
   titleId?: string;
   descriptionId?: string;
-}>({
-  open: false,
+}
+
+const DialogContext = React.createContext<DialogContextType>({
+  dialogIsOpen: false,
   onOpenChange: () => {},
 });
 
@@ -250,13 +253,13 @@ export function DialogContent({
   onOpenAutoFocus,
   onCloseAutoFocus,
 }: DialogContentProps): React.ReactElement | null {
-  const { open, titleId, descriptionId } = React.useContext(DialogContext);
+  const { dialogIsOpen: isOpen, titleId, descriptionId } = React.useContext(DialogContext);
   
   if (!container) return null;
 
   return (
     <AnimatePresence>
-      {open && (
+      {isOpen && (
         <>
           <motion.div
             initial={{ opacity: 0 }}
