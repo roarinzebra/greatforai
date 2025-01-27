@@ -8,8 +8,15 @@
 - TypeScript 5.7
 
 ### UI Components & Animation
-- Shadcn UI (Core components)
-- Radix UI Primitives
+- Shadcn UI (Extended with motion primitives)
+- Radix UI Primitives (Animated versions)
+- Framer Motion 10.16 (Core animation engine)
+- Custom Motion System Features:
+  - Physics-based animations
+  - GPU-accelerated transitions
+  - Scroll-linked effects
+  - Advanced cursor interactions
+  - Dynamic layout morphing
 - Motion Primitives (Advanced animations)
   - Gesture handling
   - Animation composition
@@ -18,10 +25,6 @@
   - Web Animations API
   - ScrollTimeline
   - Advanced sequencing
-- Framer Motion (Complex animations)
-  - Shared layout animations
-  - Gestures
-  - AnimatePresence
 - Tailwind CSS 3.4
 - Lucide Icons
 
@@ -210,3 +213,11 @@ greatforai/
 - Caching strategies
 - Sharding support
 - Read replicas 
+
+### Animation Performance
+- Motion component LCP optimization
+- Selective hydration for complex animations
+- Animation frame batching
+- Spring physics optimization
+- Smart animation suspension for background tabs
+- Adaptive animation quality based on device capabilities 

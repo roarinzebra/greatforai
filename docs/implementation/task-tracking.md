@@ -176,21 +176,74 @@ interface TaskMetadata {
   - [~] Data Display
     - [~] Tables
       - [ ] Basic table
+        - [ ] Create responsive table component
+        - [ ] Implement data fetching integration
+        - [ ] Add loading states
+        - [ ] Handle empty states
+        - [ ] Accessibility compliance
       - [ ] Sortable columns
+        - [ ] Add sorting indicators
+        - [ ] Implement client-side sorting
+        - [ ] Server-side sorting API
+        - [ ] Keyboard navigation
       - [ ] Pagination
+        - [ ] Client-side pagination
+        - [ ] Server-side pagination
+        - [ ] Page size controls
+        - [ ] Pagination accessibility
       - [ ] Row selection
+        - [ ] Single/multi-select
+        - [ ] Bulk actions
+        - [ ] Selection persistence
+        - [ ] Keyboard selection
     - [ ] Cards
       - [ ] Basic card
+        - [ ] Create card container
+        - [ ] Implement header/footer
+        - [ ] Responsive breakpoints
+        - [ ] Elevation variants
       - [ ] Interactive card
+        - [ ] Hover/focus states
+        - [ ] Click handling
+        - [ ] Animation transitions
+        - [ ] Performance optimizations
       - [ ] Media card
+        - [ ] Image/video support
+        - [ ] Aspect ratio handling
+        - [ ] Lazy loading
+        - [ ] Caption system
     - [ ] Lists
       - [ ] Basic list
+        - [ ] Virtualization setup
+        - [ ] Keyboard navigation
+        - [ ] Item templates
+        - [ ] Empty states
       - [ ] Interactive list
+        - [ ] Drag-and-drop
+        - [ ] Reordering
+        - [ ] Selection states
+        -[ ] Animation transitions
       - [ ] Virtual list
+        - [ ] Windowing implementation
+        - [ ] Dynamic item heights
+        - [ ] Scroll restoration
+        - [ ] Performance testing
     - [ ] Charts
       - [ ] Line chart
+        - [ ] Data formatting
+        - [ ] Axis configuration
+        - [ ] Tooltip system
+        - [ ] Responsive scaling
       - [ ] Bar chart
+        - [ ] Vertical/horizontal variants
+        -[ ] Stacked/grouped modes
+        - [ ] Value labels
+        - [ ] Animation transitions
       - [ ] Area chart
+        - [ ] Gradient fills
+        - [ ] Interactive legends
+        - [ ] Time-series support
+        - [ ] Performance optimizations
 
 ### Storage System [To Be Started]
 - [ ] Vercel KV Setup
